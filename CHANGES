@@ -1,3 +1,8 @@
+Release Notes - LTP - Version 1.0.4
+
+** Improvement
+    * [No Issue] - Add ltp.template.compile_template_as_chunk
+
 Release Notes - LTP - Version 1.0.3
 
 ** New Feature

@@ -68,15 +68,19 @@ local function compile_template_as_function(data, start_lua, end_lua)
   return table.concat(result)
 end
 
-local function compile_template(data, start_lua, end_lua)
+local function compile_template_as_chunk(data, start_lua, end_lua)
+  local result = { "local output = ... " }
   return
-  table.concat(compile_template_to_table({ }, data, start_lua, end_lua))
+  table.concat(compile_template_to_table(result, data, start_lua, end_lua))
+end
+
+local function compile_template(data, start_lua, end_lua)
+  return table.concat(compile_template_to_table({ }, data, start_lua, end_lua))
 end
 
 local function load_template(data, start_lua, end_lua)
-  return
-  assert(loadstring(compile_template_as_function(data, start_lua, end_lua),
-                    "=(load)"))()
+  return assert(loadstring(compile_template_as_chunk(data, start_lua, end_lua),
+                           "=(load)"))
 end
 
 local function execute_template(template, environment, output)
@@ -176,6 +180,7 @@ end
 return ltp.merge_table(
   {
     compile_template_to_table    = compile_template_to_table,
+    compile_template_as_chunk    = compile_template_as_chunk,
     compile_template_as_function = compile_template_as_function,
     compile_template             = compile_template,
     load_template                = load_template,
