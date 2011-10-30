@@ -5,7 +5,7 @@
 -- you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at
 --
---     http://www.savarese.org/software/ApacheLicense-2.0
+--     http://www.savarese.com/software/ApacheLicense-2.0
 --
 -- Unless required by applicable law or agreed to in writing, software
 -- distributed under the License is distributed on an "AS IS" BASIS,
@@ -86,8 +86,10 @@ end
 
 local function read_all(filename)
   local file = io.open(filename, "r")
-  local data = file:read("*a")
-  file:close()
+  local data = ((file and file:read("*a")) or nil)
+  if file then
+    file:close()
+  end
   return data
 end
 

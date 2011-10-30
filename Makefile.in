@@ -164,7 +164,7 @@ dist_man1_MANS = ltp.1
 LTP_LIB = ltp/util.lua ltp/template.lua
 LTP_SHARE = $(LTP_LIB:%=share/ltp/%)
 nobase_dist_pkgdata_DATA = $(LTP_LIB)
-CLEANFILES = $(bin_SCRIPTS) $(man1_MANS)
+CLEANFILES = $(bin_SCRIPTS) $(dist_man1_MANS) $(LTP_SHARE)
 BUILD := $(shell date "+%Y-%m-%d %T %Z")
 all: all-am
 

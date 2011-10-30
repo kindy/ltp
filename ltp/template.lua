@@ -5,7 +5,7 @@
 -- you may not use this file except in compliance with the License.
 -- You may obtain a copy of the License at
 --
---     http://www.savarese.org/software/ApacheLicense-2.0
+--     http://www.savarese.com/software/ApacheLicense-2.0
 --
 -- Unless required by applicable law or agreed to in writing, software
 -- distributed under the License is distributed on an "AS IS" BASIS,
@@ -102,16 +102,12 @@ local function load_environment(env_files, merge_global)
 
   if env_files and #env_files > 0 then
     for i = 1,#env_files,1 do
-      local efun, emsg = loadfile(env_files[i])
-      if efun then
-        if i > 1 then
-          environment = ltp.merge_table(setfenv(efun, environment)(), environment)
-        else
-          environment = basic_environment(merge_global, efun())
-        end
+      local efun = assert(loadfile(env_files[i]))
+
+      if i > 1 then
+        environment = ltp.merge_table(setfenv(efun, environment)(), environment)
       else
-        io.stderr:write("error loading ", env_files[i], "\n", emsg, "\n")
-        os.exit(1)
+        environment = basic_environment(merge_global, efun())
       end
     end
   else
@@ -127,15 +123,9 @@ end
 
 local function render_template(template_data, start_lua, end_lua, environment)
   local rfun = load_template(template_data, start_lua, end_lua)
-
-  if rfun then
-    local output = { }
-    execute_template(rfun, environment, output)
-    return table.concat(output)
-  else
-    io.stderr:write("error loading ", template, "\n")
-    os.exit(1)
-  end
+  local output = { }
+  execute_template(rfun, environment, output)
+  return table.concat(output)
 end
 
 local function execute_env_code(env_code, environment)
@@ -145,15 +135,14 @@ local function execute_env_code(env_code, environment)
     if fun then
       setfenv(fun, environment)()
     else
-      io.stderr:write("error loading ", env_code[i], "\n", emsg, "\n")
-      os.exit(1)
+      error("error loading " .. env_code[i] .. "\n" .. emsg)
     end
   end
 end
 
 local function render(outfile, num_passes, template, merge_global,
-                env_files, start_lua, end_lua, env_code)
-  local data = read_template(template)
+                      env_files, start_lua, end_lua, env_code)
+  local data = assert(read_template(template), "error reading " .. template)
   local environment = load_environment(env_files, merge_global)
 
   execute_env_code(env_code, environment)
@@ -191,6 +180,7 @@ return ltp.merge_table(
     compile_template             = compile_template,
     load_template                = load_template,
     execute_template             = execute_template,
+    basic_environment            = basic_environment,
     load_environment             = load_environment,
     render_template              = render_template,
     execute_env_code             = execute_env_code,
