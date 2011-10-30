@@ -1,0 +1,43 @@
+Release Notes - LTP - Version 1.0.1
+
+** Improvement
+    * [LTP-10] - Refactor ltp into one or more modules and a main script
+** Task
+    * [LTP-16] - Write man page
+
+Release Notes - LTP - Version 1.0.0
+
+** Bug
+    * [LTP-14] - merge_table overwrites existing __index metamethod
+** New Feature
+    * [LTP-7] - Add multiple pass option to support embedded expressions
+    * [LTP-15] - Add -e flag to execute some lua code within the template
+                 environment
+** Task
+    * [LTP-9] - Migrate ltp out of sloot and into its own project
+
+Release Notes - LTP - Version 0.5.0
+
+** Improvement
+    * [LTP-11] - Eliminate extra newline after end tag
+    * [LTP-13] - Environment merge should recurse and perform a deep merge
+** New Feature
+    * [LTP-3] - Add -I flag to ltp to add directories to package.path
+    * [LTP-4] - Add to ltp ability to output lua source for template
+
+Release Notes - LTP - Version 0.4.0
+
+** Bug
+    * [LTP-1] - ltp -g option breaks multi-environment merge
+** Improvement
+    * [LTP-12] - Allow ltp to merge multiple environments
+** New Feature
+    * [LTP-2] - Support reading ltp template file from standard input
+    * [LTP-5] - Make ltp embedded lua tag configurable
+
+Release Notes - LTP - Version 0.3.0
+
+** New Feature
+    * [LTP-6] - Add a promiscuous mode flag to ltp that merges
+                global environment
+    * [LTP-8] - Add ltp lua template processor

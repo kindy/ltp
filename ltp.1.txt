@@ -1,0 +1,235 @@
+// -*- Doc -*-
+// Copyright 2008 Savarese Software Research Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.savarese.org/software/ApacheLicense-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+LTP(1)
+======
+
+NAME
+----
+ltp - preprocesses template files containing embedded Lua code
+
+SYNOPSIS
+--------
+*ltp*  ['options'] 'template_file' ['env_file1' 'env_file2' '...']
+
+DESCRIPTION
+-----------
+ltp is a general purpose text preprocessor intended for generative
+programming and template-based document generation.  It processes
+a template file combined with zero or more environment files
+containing the data to be inserted into the template.  Expressions
+embedded in templates are evaluated as Lua code within an environment
+formed from the successive composition of all the environment files.
+
+The resulting document is written to standard output.  To write output
+to a specific file, you should use shell output redirection.
+
+OPTIONS
+-------
+*-c*::
+        Compiles template to Lua code.
+*-C*::
+        Compiles template to Lua code, omitting the function wrapper.
+*-e* 'code'::
+        Executes Lua code within the template execution environment
+        immediately before executing the template.
+*-g*::
+        Merges global environment into rendering environment.
+*-h,--help*::
+        Prints this help message.
+*-I directory*::
+        Adds a directory to the search path for require directives.
+*-n* '\#'::
+        Performs successive expansions of template output, treating
+        the output as a new template, for a total of '\#' passes.  This
+        allows the use of embedded expressions.  By default, only a
+        single pass (\# = 1) is made (i.e., only the original template
+        is evaluated).  A value of 0 may be specified to cause as many
+        passes to be performed as necessary so that no embedded expressions
+        remain in the output.
+*-t* 'start_lua_token' 'end_lua_token'::
+        Specifies the start and end tokens that demarcate embedded
+        Lua code.  The defaults are '<?lua' and '?>'.
+*-v,--version*::
+        Prints version information.
+
+EXAMPLES
+--------
+
+This section is incomplete and will contain explanations and examples
+for writing template and environment files.  For now, the most
+important items to understand are that you can access the +ltp.import+
+and +ltp.merge_table+ functions from within a template or environment
+file.
+
++ltp.import(module_name, environment)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Templates may be compiled for inclusion by other templates via the
++ltp.import+ function.  For example, you may have a header template
+that is imported by a document template.
+
+.head.ltp
+--------------------------------------
+<head>
+  <title><?lua= page.title ?></title>
+</head>
+--------------------------------------
+
+This template would be compiled with:
+
+--------------------------
+ltp -c head.ltp > head.lua
+--------------------------
+
+This command compiles the template to a lua function that accepts a
+single argument called 'output'.  Import the template with:
+
+.document.ltp
+----------------------------
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<?lua ltp.import('head', getfenv())(output) ?>
+<body>
+...
+</body>
+----------------------------
+
+The 'output' variable is an implicit global table available inside of
+templates that stores rendered content.  The use of +getfenv()+
+ensures that +page.title+ is availble to +head.ltp+.
+
+You can also create a library of functions by compiling with the '-C'
+option and returning a table of functions from the template library.
+For example, instead of a header template, you could write a header
+function:
+
+.head.ltp
+---------------------------------------------
+<?lua local function head(output, title) ?>
+<head>
+  <title><?lua= title ?></title>
+</head>
+<?lua end
+  return { head = head }
+ ?>
+---------------------------------------------
+
+--------------------------
+ltp -C head.ltp > head.lua
+--------------------------
+
+.document.ltp
+----------------------------
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<?lua
+  local head = require('head').head
+  head(output, page.title)
+ ?>
+<body>
+...
+</body>
+----------------------------
+
++ltp.merge_table(t1, t2)+
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Even though *ltp* merges multiple environment files specified on the
+command line, there are times when a self-contained template or
+environment file needs to import and merge data from another source.
+You can use the +ltp.mergetable+ function to do this.  For example,
+let's say you have an environment file that uses color data from
+another file:
+
+.style.lua
+---------------------------
+local Color = require('colors.lua')
+
+local style =
+[[
+<style type="text/css">
+html {
+  background-color: <?lua= Color.Black ?>;
+  color: <?lua= Color.White ?>;
+}
+<style>
+]]
+
+return ltp.merge_table({style = style}, {Color = Color})
+---------------------------
+
+Environment files must return a table whose fields are merged into the
+global environment when executing a template.  +ltp.merge_table+
+merges the second argument into the first argument and returns the
+first argument after merging.  Of course, the above example didn't
+require the use of +ltp.merge_table+.  The environment file could
+have returned a single table:
+
+--------------------------------------
+return {style = style, Color = Color }
+--------------------------------------
+
+However, when two tables share element names and one should override
+the other, you must use +ltp.merge_table+.
+
+EXIT STATUS
+-----------
+*0*::
+        Indicates the program terminated without producing any errors.
+*1*::
+        Indicates the program terminated after encountering an error.
+
+BUGS
+----
+Report bugs to software at savarese.com.
+
+Currently, it is not possible to nest '<?lua ... ?>' within Lua code
+in a template file.  A workaround is to precompile the template, using
+different tokens for the template code and the nested data.  For
+example, you can write the following:
+
+--------------------------
+<?ltp local name = [[<?lua= lastname ?>, <?lua= firstname ?>]] ltp?>
+--------------------------
+
+Then you can precompile the template with:
+
+----------------------------------
+ltp -c -n 1 -t "<?ltp" "ltp?>" ...
+----------------------------------
+
+Finally, you can use the compiled template via +require+ or +ltp.import+
+calls.
+
+AUTHOR
+------
+Written by Daniel F. Savarese, Savarese Software Research Corporation.
+
+COPYRIGHT
+---------
+Copyright 2007-2008 Savarese Software Research Corporation.
+
+LICENSE
+-------
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.savarese.org/software/ApacheLicense-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
