@@ -18,9 +18,11 @@ dist_man1_MANS = ltp.1
 
 LTP_LIB = ltp/util.lua ltp/template.lua
 LTP_SHARE = $(LTP_LIB:%=share/ltp/%)
-nobase_dist_pkgdata_DATA = $(LTP_LIB)
+LTP_HTML_DIR = doc
+LTP_HTML = $(LTP_HTML_DIR)/ltp.1.html
+nobase_dist_pkgdata_DATA = $(LTP_LIB) $(LTP_HTML)
 
-CLEANFILES = $(bin_SCRIPTS) $(dist_man1_MANS) $(LTP_SHARE)
+CLEANFILES = $(bin_SCRIPTS) $(dist_man1_MANS) $(LTP_SHARE) $(LTP_HTML)
 
 BUILD := $(shell date "+%Y-%m-%d %T %Z")
 
@@ -32,12 +34,18 @@ $(LTP_SHARE): share/ltp/%: $(top_srcdir)/%
 
 ltp: ltp.lua $(LTP_SHARE)
 	sed -e 's#\@LTP_LIB_DIR\@#$(pkgdatadir)#g' \
+	    -e 's#\@LTP_INST_DIR\@#$(prefix)#g' \
 	    -e 's/\@VERSION\@/$(VERSION)/g' \
 	    -e 's/\@BUILD\@/$(BUILD)/g'  < $< > $@
 	chmod +x $@
 
 ltp.1: ltp.1.txt
-	a2x -f manpage -D . $<
+	a2x -f manpage -D . -a revnumber=$(VERSION) $<
 
-ltp.1.html: ltp.1.txt
-	a2x -f xhtml -D . --copy $<
+$(LTP_HTML_DIR):
+	$(MKDIR_P) $@
+
+$(LTP_HTML): ltp.1.txt $(LTP_HTML_DIR)
+	if [ ! -f $(top_srcdir)/$(LTP_HTML) ]; then \
+	  a2x -f xhtml -D $(@D) -a revnumber=$(VERSION) --copy $< ;\
+	fi

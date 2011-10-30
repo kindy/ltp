@@ -52,6 +52,10 @@ Options:
             Lua code.  The defaults are '<?lua' and '?>'.
   -v,--version
             Prints version information.
+  --lib-dir
+            Prints the directory name containing the ltp library modules.
+  --install-dir
+            Prints the directory name used as the ltp installation prefix.
 ]])
 end
 
@@ -119,6 +123,12 @@ local function main(arg)
       else
         table.insert(env_code, code)
       end
+    elseif arg[i] == "--lib-dir" then
+      io.stdout:write("@LTP_LIB_DIR@\n")
+      os.exit(0)
+    elseif arg[i] == "--install-dir" then
+      io.stdout:write("@LTP_INST_DIR@\n")
+      os.exit(0)
     else
       break
     end

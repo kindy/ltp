@@ -12,7 +12,7 @@ dnl WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 dnl See the License for the specific language governing permissions and
 dnl limitations under the License.
 
-AC_INIT(ltp, 1.0.2)
+AC_INIT(ltp, 1.0.3)
 AC_PREREQ(2.50)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_HOST

@@ -1,3 +1,9 @@
+Release Notes - LTP - Version 1.0.3
+
+** New Feature
+    * [No Issue] - Add --lib-dir and --install-dir options to report library
+                   module directory and program installation prefix.
+
 Release Notes - LTP - Version 1.0.2
 
 ** Improvement

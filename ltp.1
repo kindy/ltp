@@ -1,120 +1,324 @@
 .\"     Title: ltp
-.\"    Author: 
-.\" Generator: DocBook XSL Stylesheets v1.73.2 <http://docbook.sf.net/>
-.\"      Date: 01/21/2009
-.\"    Manual: 
-.\"    Source: 
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.74.0 <http://docbook.sf.net/>
+.\"      Date: 09/17/2009
+.\"    Manual: ltp Manual
+.\"    Source: ltp 1.0.3
+.\"  Language: English
 .\"
-.TH "LTP" "1" "01/21/2009" "" ""
+.TH "LTP" "1" "09/17/2009" "ltp 1\&.0\&.3" "ltp Manual"
+.\" -----------------------------------------------------------------
+.\" * (re)Define some macros
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" toupper - uppercase a string (locale-aware)
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de toupper
+.tr aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
+\\$*
+.tr aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" SH-xref - format a cross-reference to an SH section
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de SH-xref
+.ie n \{\
+.\}
+.toupper \\$*
+.el \{\
+\\$*
+.\}
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" SH - level-one heading that works better for non-TTY output
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de1 SH
+.\" put an extra blank line of space above the head in non-TTY output
+.if t \{\
+.sp 1
+.\}
+.sp \\n[PD]u
+.nr an-level 1
+.set-an-margin
+.nr an-prevailing-indent \\n[IN]
+.fi
+.in \\n[an-margin]u
+.ti 0
+.HTML-TAG ".NH \\n[an-level]"
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+\." make the size of the head bigger
+.ps +3
+.ft B
+.ne (2v + 1u)
+.ie n \{\
+.\" if n (TTY output), use uppercase
+.toupper \\$*
+.\}
+.el \{\
+.nr an-break-flag 0
+.\" if not n (not TTY), use normal case (not uppercase)
+\\$1
+.in \\n[an-margin]u
+.ti 0
+.\" if not n (not TTY), put a border/line under subheading
+.sp -.6
+\l'\n(.lu'
+.\}
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" SS - level-two heading that works better for non-TTY output
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de1 SS
+.sp \\n[PD]u
+.nr an-level 1
+.set-an-margin
+.nr an-prevailing-indent \\n[IN]
+.fi
+.in \\n[IN]u
+.ti \\n[SN]u
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.ps \\n[PS-SS]u
+\." make the size of the head bigger
+.ps +2
+.ft B
+.ne (2v + 1u)
+.if \\n[.$] \&\\$*
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" BB/BE - put background/screen (filled box) around block of text
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de BB
+.if t \{\
+.sp -.5
+.br
+.in +2n
+.ll -2n
+.gcolor red
+.di BX
+.\}
+..
+.de EB
+.if t \{\
+.if "\\$2"adjust-for-leading-newline" \{\
+.sp -1
+.\}
+.br
+.di
+.in
+.ll
+.gcolor
+.nr BW \\n(.lu-\\n(.i
+.nr BH \\n(dn+.5v
+.ne \\n(BHu+.5v
+.ie "\\$2"adjust-for-leading-newline" \{\
+\M[\\$1]\h'1n'\v'+.5v'\D'P \\n(BWu 0 0 \\n(BHu -\\n(BWu 0 0 -\\n(BHu'\M[]
+.\}
+.el \{\
+\M[\\$1]\h'1n'\v'-.5v'\D'P \\n(BWu 0 0 \\n(BHu -\\n(BWu 0 0 -\\n(BHu'\M[]
+.\}
+.in 0
+.sp -.5v
+.nf
+.BX
+.in
+.sp .5v
+.fi
+.\}
+..
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" BM/EM - put colored marker in margin next to block of text
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.de BM
+.if t \{\
+.br
+.ll -2n
+.gcolor red
+.di BX
+.\}
+..
+.de EM
+.if t \{\
+.br
+.di
+.ll
+.gcolor
+.nr BH \\n(dn
+.ne \\n(BHu
+\M[\\$1]\D'P -.75n 0 0 \\n(BHu -(\\n[.i]u - \\n(INu - .75n) 0 0 -\\n(BHu'\M[]
+.in 0
+.nf
+.BX
+.in
+.fi
+.\}
+..
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
-.SH "NAME"
-ltp - preprocesses template files containing embedded Lua code
-.SH "SYNOPSIS"
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "Name"
+ltp \- preprocesses template files containing embedded Lua code
+.SH "Synopsis"
+.sp
 \fBltp\fR [\fIoptions\fR] \fItemplate_file\fR [\fIenv_file1\fR \fIenv_file2\fR \fI\&...\fR]
-.sp
 .SH "DESCRIPTION"
-ltp is a general purpose text preprocessor intended for generative programming and template\-based document generation\. It processes a template file combined with zero or more environment files containing the data to be inserted into the template\. Expressions embedded in templates are evaluated as Lua code within an environment formed from the successive composition of all the environment files\.
 .sp
-The resulting document is written to standard output\. To write output to a specific file, you should use shell output redirection\.
+ltp is a general purpose text preprocessor intended for generative programming and template\-based document generation\&. It processes a template file combined with zero or more environment files containing the data to be inserted into the template\&. Expressions embedded in templates are evaluated as Lua code within an environment formed from the successive composition of all the environment files\&.
 .sp
+The resulting document is written to standard output\&. To write output to a specific file, you should use shell output redirection\&.
 .SH "OPTIONS"
 .PP
 \fB\-c\fR
 .RS 4
-Compiles template to Lua code\.
+Compiles template to Lua code\&.
 .RE
 .PP
 \fB\-C\fR
 .RS 4
-Compiles template to Lua code, omitting the function wrapper\.
+Compiles template to Lua code, omitting the function wrapper\&.
 .RE
 .PP
 \fB\-e\fR \fIcode\fR
 .RS 4
-Executes Lua code within the template execution environment immediately before executing the template\.
+Executes Lua code within the template execution environment immediately before executing the template\&.
 .RE
 .PP
 \fB\-g\fR
 .RS 4
-Merges global environment into rendering environment\.
+Merges global environment into rendering environment\&.
 .RE
 .PP
 \fB\-h,\-\-help\fR
 .RS 4
-Prints this help message\.
+Prints this help message\&.
 .RE
 .PP
 \fB\-I directory\fR
 .RS 4
-Adds a directory to the search path for require directives\.
+Adds a directory to the search path for require directives\&.
 .RE
 .PP
 \fB\-n\fR \fI#\fR
 .RS 4
 Performs successive expansions of template output, treating the output as a new template, for a total of
 \fI#\fR
-passes\. This allows the use of embedded expressions\. By default, only a single pass (# = 1) is made (i\.e\., only the original template is evaluated)\. A value of 0 may be specified to cause as many passes to be performed as necessary so that no embedded expressions remain in the output\.
+passes\&. This allows the use of embedded expressions\&. By default, only a single pass (# = 1) is made (i\&.e\&., only the original template is evaluated)\&. A value of 0 may be specified to cause as many passes to be performed as necessary so that no embedded expressions remain in the output\&.
 .RE
 .PP
 \fB\-t\fR \fIstart_lua_token\fR \fIend_lua_token\fR
 .RS 4
-Specifies the start and end tokens that demarcate embedded Lua code\. The defaults are
+Specifies the start and end tokens that demarcate embedded Lua code\&. The defaults are
 \fI<?lua\fR
 and
-\fI?>\fR\.
+\fI?>\fR\&.
 .RE
 .PP
 \fB\-v,\-\-version\fR
 .RS 4
-Prints version information\.
+Prints version information\&.
+.RE
+.PP
+\fB\-\-lib\-dir\fR
+.RS 4
+Prints the directory name containing the ltp library modules\&.
+.RE
+.PP
+\fB\-\-install\-dir\fR
+.RS 4
+Prints the directory name used as the ltp installation prefix\&.
 .RE
 .SH "EXAMPLES"
-This section is incomplete and will contain explanations and examples for writing template and environment files\. For now, the most important items to understand are that you can access the ltp\.import and ltp\.merge_table functions from within a template or environment file\.
 .sp
-.SS "ltp\.import(module_name, environment)"
-Templates may be compiled for inclusion by other templates via the ltp\.import function\. For example, you may have a header template that is imported by a document template\.
+This section is incomplete and will contain explanations and examples for writing template and environment files\&. For now, the most important items to understand are that you can access the \FCltp\&.import\F[] and \FCltp\&.merge_table\F[] functions from within a template or environment file\&.
+.SS "\FCltp\&.import(module_name, environment)\F[]"
+.sp
+Templates may be compiled for inclusion by other templates via the \FCltp\&.import\F[] function\&. For example, you may have a header template that is imported by a document template\&.
 .PP
-\fBExample\ 1.\ head.ltp\fR
+\fBExample\ \&1.\ \&head.ltp\fR
 .sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
+.BB lightgray
 <head>
-  <title><?lua= page\.title ?></title>
+  <title><?lua= page\&.title ?></title>
 </head>
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
+.\}
+.sp
 This template would be compiled with:
 .sp
-.sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
-ltp \-c head\.ltp > head\.lua
+.BB lightgray
+ltp \-c head\&.ltp > head\&.lua
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
-This command compiles the template to a lua function that accepts a single argument called \fIoutput\fR\. Import the template with:
-.PP
-\fBExample\ 2.\ document.ltp\fR
+.\}
 .sp
+This command compiles the template to a lua function that accepts a single argument called \fIoutput\fR\&. Import the template with:
+.PP
+\fBExample\ \&2.\ \&document.ltp\fR
+.sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
-<html xmlns="http://www\.w3\.org/1999/xhtml" xml:lang="en" lang="en">
-<?lua ltp\.import(\'head\', getfenv())(output) ?>
+.BB lightgray
+<html xmlns="http://www\&.w3\&.org/1999/xhtml" xml:lang="en" lang="en">
+<?lua ltp\&.import(\'head\', getfenv())(output) ?>
 <body>
-\.\.\.
+\&.\&.\&.
 </body>
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
-The \fIoutput\fR variable is an implicit global table available inside of templates that stores rendered content\. The use of getfenv() ensures that page\.title is availble to head\.ltp\.
+.\}
 .sp
-You can also create a library of functions by compiling with the \fI\-C\fR option and returning a table of functions from the template library\. For example, instead of a header template, you could write a header function:
+The \fIoutput\fR variable is an implicit global table available inside of templates that stores rendered content\&. The use of \FCgetfenv()\F[] ensures that \FCpage\&.title\F[] is availble to \FChead\&.ltp\F[]\&.
+.sp
+You can also create a library of functions by compiling with the \fI\-C\fR option and returning a table of functions from the template library\&. For example, instead of a header template, you could write a header function:
 .PP
-\fBExample\ 3.\ head.ltp\fR
+\fBExample\ \&3.\ \&head.ltp\fR
 .sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
+.BB lightgray
 <?lua local function head(output, title) ?>
 <head>
   <title><?lua= title ?></title>
@@ -122,107 +326,184 @@ You can also create a library of functions by compiling with the \fI\-C\fR optio
 <?lua end
   return { head = head }
  ?>
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
+.\}
+
 .sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
-ltp \-C head\.ltp > head\.lua
+.BB lightgray
+ltp \-C head\&.ltp > head\&.lua
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
+.\}
 .PP
-\fBExample\ 4.\ document.ltp\fR
+\fBExample\ \&4.\ \&document.ltp\fR
 .sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
-<html xmlns="http://www\.w3\.org/1999/xhtml" xml:lang="en" lang="en">
+.BB lightgray
+<html xmlns="http://www\&.w3\&.org/1999/xhtml" xml:lang="en" lang="en">
 <?lua
-  local head = require(\'head\')\.head
-  head(output, page\.title)
+  local head = require(\'head\')\&.head
+  head(output, page\&.title)
  ?>
 <body>
-\.\.\.
+\&.\&.\&.
 </body>
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
-.SS "ltp\.merge_table(t1, t2)"
-Even though \fBltp\fR merges multiple environment files specified on the command line, there are times when a self\-contained template or environment file needs to import and merge data from another source\. You can use the ltp\.mergetable function to do this\. For example, let\'s say you have an environment file that uses color data from another file:
-.PP
-\fBExample\ 5.\ style.lua\fR
+.\}
+.SS "\FCltp\&.merge_table(t1, t2)\F[]"
 .sp
+Even though \fBltp\fR merges multiple environment files specified on the command line, there are times when a self\-contained template or environment file needs to import and merge data from another source\&. You can use the \FCltp\&.mergetable\F[] function to do this\&. For example, let\'s say you have an environment file that uses color data from another file:
+.PP
+\fBExample\ \&5.\ \&style.lua\fR
+.sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
-local Color = require(\'colors\.lua\')
+.BB lightgray
+local Color = require(\'colors\')
 
 local style =
 [[
 <style type="text/css">
 html {
-  background\-color: <?lua= Color\.Black ?>;
-  color: <?lua= Color\.White ?>;
+  background\-color: <?lua= Color\&.Black ?>;
+  color: <?lua= Color\&.White ?>;
 }
 <style>
 ]]
 
-return ltp\.merge_table({style = style}, {Color = Color})
+return ltp\&.merge_table({style = style}, {Color = Color})
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
-Environment files must return a table whose fields are merged into the global environment when executing a template\. ltp\.merge_table merges the second argument into the first argument and returns the first argument after merging\. Of course, the above example didn\'t require the use of ltp\.merge_table\. The environment file could have returned a single table:
+.\}
 .sp
+Environment files must return a table whose fields are merged into the global environment when executing a template\&. \FCltp\&.merge_table\F[] merges the second argument into the first argument and returns the first argument after merging\&. Of course, the above example didn\'t require the use of \FCltp\&.merge_table\F[]\&. The environment file could have returned a single table:
 .sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
+.BB lightgray
 return {style = style, Color = Color }
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
-However, when two tables share element names and one should override the other, you must use ltp\.merge_table\.
+.\}
 .sp
+However, when two tables share element names and one should override the other, you must use \FCltp\&.merge_table\F[]\&.
 .SH "EXIT STATUS"
 .PP
 \fB0\fR
 .RS 4
-Indicates the program terminated without producing any errors\.
+Indicates the program terminated without producing any errors\&.
 .RE
 .PP
 \fB1\fR
 .RS 4
-Indicates the program terminated after encountering an error\.
+Indicates the program terminated after encountering an error\&.
 .RE
 .SH "BUGS"
-Report bugs to software at savarese\.com\.
 .sp
-Currently, it is not possible to nest \fI<?lua \&... ?>\fR within Lua code in a template file\. A workaround is to precompile the template, using different tokens for the template code and the nested data\. For example, you can write the following:
+Report bugs to software at savarese\&.com\&.
 .sp
+Currently, it is not possible to nest \fI<?lua \&... ?>\fR within Lua code in a template file\&. A workaround is to precompile the template, using different tokens for the template code and the nested data\&. For example, you can write the following:
 .sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
+.BB lightgray
 <?ltp local name = [[<?lua= lastname ?>, <?lua= firstname ?>]] ltp?>
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
+.\}
+.sp
 Then you can precompile the template with:
 .sp
-.sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
-ltp \-c \-n 1 \-t "<?ltp" "ltp?>" \.\.\.
+.BB lightgray
+ltp \-c \-n 1 \-t "<?ltp" "ltp?>" \&.\&.\&.
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
-Finally, you can use the compiled template via require or ltp\.import calls\.
+.\}
 .sp
+Finally, you can use the compiled template via \FCrequire\F[] or \FCltp\&.import\F[] calls\&.
 .SH "AUTHOR"
-Written by Daniel F\. Savarese, Savarese Software Research Corporation\.
 .sp
+Written by Daniel F\&. Savarese, Savarese Software Research Corporation\&.
 .SH "COPYRIGHT"
-Copyright 2007\-2008 Savarese Software Research Corporation\.
 .sp
+Copyright 2007\-2008 Savarese Software Research Corporation\&.
 .SH "LICENSE"
-Licensed under the Apache License, Version 2\.0 (the "License"); you may not use this file except in compliance with the License\. You may obtain a copy of the License at
 .sp
+Licensed under the Apache License, Version 2\&.0 (the "License"); you may not use this file except in compliance with the License\&. You may obtain a copy of the License at
 .sp
+.if n \{\
 .RS 4
+.\}
+.fam C
+.ps -1
 .nf
-http://www\.savarese\.com/software/ApacheLicense\-2\.0
+.BB lightgray
+http://www\&.savarese\&.com/software/ApacheLicense\-2\&.0
+.EB lightgray
 .fi
+.fam
+.ps +1
+.if n \{\
 .RE
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied\. See the License for the specific language governing permissions and limitations under the License\.
+.\}
 .sp
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied\&. See the License for the specific language governing permissions and limitations under the License\&.

@@ -12,6 +12,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+:man source: ltp
+:man version: {revnumber}
+:man manual: ltp Manual
+
 LTP(1)
 ======
 
@@ -63,6 +67,10 @@ OPTIONS
         Lua code.  The defaults are '<?lua' and '?>'.
 *-v,--version*::
         Prints version information.
+*--lib-dir*::
+        Prints the directory name containing the ltp library modules.
+*--install-dir*::
+        Prints the directory name used as the ltp installation prefix.
 
 EXAMPLES
 --------
@@ -153,7 +161,7 @@ another file:
 
 .style.lua
 ---------------------------
-local Color = require('colors.lua')
+local Color = require('colors')
 
 local style =
 [[

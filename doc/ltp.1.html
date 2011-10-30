@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>LTP(1)</title><link rel="stylesheet" href="./docbook-xsl.css" type="text/css" /><meta name="generator" content="DocBook XSL Stylesheets V1.74.0" /></head><body><div class="article" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title"><a id="id2532625"></a>LTP(1)</h2></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="#_name">1. NAME</a></span></dt><dt><span class="section"><a href="#_synopsis">2. SYNOPSIS</a></span></dt><dt><span class="section"><a href="#_description">3. DESCRIPTION</a></span></dt><dt><span class="section"><a href="#_options">4. OPTIONS</a></span></dt><dt><span class="section"><a href="#_examples">5. EXAMPLES</a></span></dt><dd><dl><dt><span class="section"><a href="#_literal_ltp_import_module_name_environment_literal">5.1. ltp.import(module_name, environment)</a></span></dt><dt><span class="section"><a href="#_literal_ltp_merge_table_t1_t2_literal">5.2. ltp.merge_table(t1, t2)</a></span></dt></dl></dd><dt><span class="section"><a href="#_exit_status">6. EXIT STATUS</a></span></dt><dt><span class="section"><a href="#_bugs">7. BUGS</a></span></dt><dt><span class="section"><a href="#_author">8. AUTHOR</a></span></dt><dt><span class="section"><a href="#_copyright">9. COPYRIGHT</a></span></dt><dt><span class="section"><a href="#_license">10. LICENSE</a></span></dt></dl></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_name"></a>1. NAME</h2></div></div></div><p>ltp - preprocesses template files containing embedded Lua code</p></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_synopsis"></a>2. SYNOPSIS</h2></div></div></div><p><span class="strong"><strong>ltp</strong></span>  [<span class="emphasis"><em>options</em></span>] <span class="emphasis"><em>template_file</em></span> [<span class="emphasis"><em>env_file1</em></span> <span class="emphasis"><em>env_file2</em></span> <span class="emphasis"><em>…</em></span>]</p></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_description"></a>3. DESCRIPTION</h2></div></div></div><p>ltp is a general purpose text preprocessor intended for generative
+programming and template-based document generation.  It processes
+a template file combined with zero or more environment files
+containing the data to be inserted into the template.  Expressions
+embedded in templates are evaluated as Lua code within an environment
+formed from the successive composition of all the environment files.</p><p>The resulting document is written to standard output.  To write output
+to a specific file, you should use shell output redirection.</p></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_options"></a>4. OPTIONS</h2></div></div></div><div class="variablelist"><dl><dt><span class="term">
+<span class="strong"><strong>-c</strong></span>
+</span></dt><dd>
+        Compiles template to Lua code.
+</dd><dt><span class="term">
+<span class="strong"><strong>-C</strong></span>
+</span></dt><dd>
+        Compiles template to Lua code, omitting the function wrapper.
+</dd><dt><span class="term">
+<span class="strong"><strong>-e</strong></span> <span class="emphasis"><em>code</em></span>
+</span></dt><dd>
+        Executes Lua code within the template execution environment
+        immediately before executing the template.
+</dd><dt><span class="term">
+<span class="strong"><strong>-g</strong></span>
+</span></dt><dd>
+        Merges global environment into rendering environment.
+</dd><dt><span class="term">
+<span class="strong"><strong>-h,—help</strong></span>
+</span></dt><dd>
+        Prints this help message.
+</dd><dt><span class="term">
+<span class="strong"><strong>-I directory</strong></span>
+</span></dt><dd>
+        Adds a directory to the search path for require directives.
+</dd><dt><span class="term">
+<span class="strong"><strong>-n</strong></span> <span class="emphasis"><em>#</em></span>
+</span></dt><dd>
+        Performs successive expansions of template output, treating
+        the output as a new template, for a total of <span class="emphasis"><em>#</em></span> passes.  This
+        allows the use of embedded expressions.  By default, only a
+        single pass (# = 1) is made (i.e., only the original template
+        is evaluated).  A value of 0 may be specified to cause as many
+        passes to be performed as necessary so that no embedded expressions
+        remain in the output.
+</dd><dt><span class="term">
+<span class="strong"><strong>-t</strong></span> <span class="emphasis"><em>start_lua_token</em></span> <span class="emphasis"><em>end_lua_token</em></span>
+</span></dt><dd>
+        Specifies the start and end tokens that demarcate embedded
+        Lua code.  The defaults are <span class="emphasis"><em>&lt;?lua</em></span> and <span class="emphasis"><em>?&gt;</em></span>.
+</dd><dt><span class="term">
+<span class="strong"><strong>-v,—version</strong></span>
+</span></dt><dd>
+        Prints version information.
+</dd><dt><span class="term">
+<span class="strong"><strong>—lib-dir</strong></span>
+</span></dt><dd>
+        Prints the directory name containing the ltp library modules.
+</dd><dt><span class="term">
+<span class="strong"><strong>—install-dir</strong></span>
+</span></dt><dd>
+        Prints the directory name used as the ltp installation prefix.
+</dd></dl></div></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_examples"></a>5. EXAMPLES</h2></div></div></div><p>This section is incomplete and will contain explanations and examples
+for writing template and environment files.  For now, the most
+important items to understand are that you can access the <code class="literal">ltp.import</code>
+and <code class="literal">ltp.merge_table</code> functions from within a template or environment
+file.</p><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="_literal_ltp_import_module_name_environment_literal"></a>5.1. <code class="literal">ltp.import(module_name, environment)</code></h3></div></div></div><p>Templates may be compiled for inclusion by other templates via the
+<code class="literal">ltp.import</code> function.  For example, you may have a header template
+that is imported by a document template.</p><div class="example"><a id="id2585904"></a><p class="title"><b>Example 1. head.ltp</b></p><div class="example-contents"><pre class="screen">&lt;head&gt;
+  &lt;title&gt;&lt;?lua= page.title ?&gt;&lt;/title&gt;
+&lt;/head&gt;</pre></div></div><br class="example-break" /><p>This template would be compiled with:</p><pre class="screen">ltp -c head.ltp &gt; head.lua</pre><p>This command compiles the template to a lua function that accepts a
+single argument called <span class="emphasis"><em>output</em></span>.  Import the template with:</p><div class="example"><a id="id2587288"></a><p class="title"><b>Example 2. document.ltp</b></p><div class="example-contents"><pre class="screen">&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;?lua ltp.import('head', getfenv())(output) ?&gt;
+&lt;body&gt;
+...
+&lt;/body&gt;</pre></div></div><br class="example-break" /><p>The <span class="emphasis"><em>output</em></span> variable is an implicit global table available inside of
+templates that stores rendered content.  The use of <code class="literal">getfenv()</code>
+ensures that <code class="literal">page.title</code> is availble to <code class="literal">head.ltp</code>.</p><p>You can also create a library of functions by compiling with the <span class="emphasis"><em>-C</em></span>
+option and returning a table of functions from the template library.
+For example, instead of a header template, you could write a header
+function:</p><div class="example"><a id="id2587344"></a><p class="title"><b>Example 3. head.ltp</b></p><div class="example-contents"><pre class="screen">&lt;?lua local function head(output, title) ?&gt;
+&lt;head&gt;
+  &lt;title&gt;&lt;?lua= title ?&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;?lua end
+  return { head = head }
+ ?&gt;</pre></div></div><br class="example-break" /><pre class="screen">ltp -C head.ltp &gt; head.lua</pre><div class="example"><a id="id2587364"></a><p class="title"><b>Example 4. document.ltp</b></p><div class="example-contents"><pre class="screen">&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;?lua
+  local head = require('head').head
+  head(output, page.title)
+ ?&gt;
+&lt;body&gt;
+...
+&lt;/body&gt;</pre></div></div><br class="example-break" /></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="_literal_ltp_merge_table_t1_t2_literal"></a>5.2. <code class="literal">ltp.merge_table(t1, t2)</code></h3></div></div></div><p>Even though <span class="strong"><strong>ltp</strong></span> merges multiple environment files specified on the
+command line, there are times when a self-contained template or
+environment file needs to import and merge data from another source.
+You can use the <code class="literal">ltp.mergetable</code> function to do this.  For example,
+let's say you have an environment file that uses color data from
+another file:</p><div class="example"><a id="id2587417"></a><p class="title"><b>Example 5. style.lua</b></p><div class="example-contents"><pre class="screen">local Color = require('colors')
+
+local style =
+[[
+&lt;style type="text/css"&gt;
+html {
+  background-color: &lt;?lua= Color.Black ?&gt;;
+  color: &lt;?lua= Color.White ?&gt;;
+}
+&lt;style&gt;
+]]
+
+return ltp.merge_table({style = style}, {Color = Color})</pre></div></div><br class="example-break" /><p>Environment files must return a table whose fields are merged into the
+global environment when executing a template.  <code class="literal">ltp.merge_table</code>
+merges the second argument into the first argument and returns the
+first argument after merging.  Of course, the above example didn't
+require the use of <code class="literal">ltp.merge_table</code>.  The environment file could
+have returned a single table:</p><pre class="screen">return {style = style, Color = Color }</pre><p>However, when two tables share element names and one should override
+the other, you must use <code class="literal">ltp.merge_table</code>.</p></div></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_exit_status"></a>6. EXIT STATUS</h2></div></div></div><div class="variablelist"><dl><dt><span class="term">
+<span class="strong"><strong>0</strong></span>
+</span></dt><dd>
+        Indicates the program terminated without producing any errors.
+</dd><dt><span class="term">
+<span class="strong"><strong>1</strong></span>
+</span></dt><dd>
+        Indicates the program terminated after encountering an error.
+</dd></dl></div></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_bugs"></a>7. BUGS</h2></div></div></div><p>Report bugs to software at savarese.com.</p><p>Currently, it is not possible to nest <span class="emphasis"><em>&lt;?lua … ?&gt;</em></span> within Lua code
+in a template file.  A workaround is to precompile the template, using
+different tokens for the template code and the nested data.  For
+example, you can write the following:</p><pre class="screen">&lt;?ltp local name = [[&lt;?lua= lastname ?&gt;, &lt;?lua= firstname ?&gt;]] ltp?&gt;</pre><p>Then you can precompile the template with:</p><pre class="screen">ltp -c -n 1 -t "&lt;?ltp" "ltp?&gt;" ...</pre><p>Finally, you can use the compiled template via <code class="literal">require</code> or <code class="literal">ltp.import</code>
+calls.</p></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_author"></a>8. AUTHOR</h2></div></div></div><p>Written by Daniel F. Savarese, Savarese Software Research Corporation.</p></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_copyright"></a>9. COPYRIGHT</h2></div></div></div><p>Copyright 2007-2008 Savarese Software Research Corporation.</p></div><div class="section" lang="en" xml:lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="_license"></a>10. LICENSE</h2></div></div></div><p>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p><pre class="literallayout">http://www.savarese.com/software/ApacheLicense-2.0</pre><p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p></div></div></body></html>
